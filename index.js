@@ -1,7 +1,7 @@
 const express = require('express');
-const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
+const chromium = require('chrome-aws-lambda');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,18 +19,12 @@ app.get('/screenshot', async (req, res) => {
     }
 
     try {
-        console.log(process.env.PUPPETEER_EXECUTABLE_PATH);
-        const browser = await puppeteer.launch({
-            args: [
-              "--disable-setuid-sandbox",
-              "--no-sandbox",
-              "--single-process",
-              "--no-zygote",
-            ],
-            executablePath:
-              process.env.NODE_ENV === "production"
-                ? process.env.PUPPETEER_EXECUTABLE_PATH
-                : puppeteer.executablePath(),
+        
+        const browser = await chromium.puppeteer.launch({
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath,
+            headless: chromium.headless,
           });
 
     
