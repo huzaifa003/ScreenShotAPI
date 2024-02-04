@@ -1,13 +1,11 @@
 const express = require('express');
+const chromium = require('chromium');
+const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
-const chromium = require('chrome-aws-lambda');
-const puppeteer = require('puppeteer-core');
-
 
 const app = express();
 const port = process.env.PORT || 3000;
-require("dotenv").config();
 
 // Ensure the screenshots directory exists
 const screenshotsDir = path.join(__dirname, 'screenshots');
@@ -21,16 +19,18 @@ app.get('/screenshot', async (req, res) => {
     }
 
     try {
+        const browser = await puppeteer.launch({
+            headless: "new", // Opt into the new headless mode
+            // args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            // defaultViewport: { width: 1920, height: 1080 },
+            // ignoreHTTPSErrors: true,
+            // timeout: 0,
+            // Optional: Set up a custom user agent
+            // userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            "executablePath": chromium.path
+        });
+
         
-
-        const browser = await chromium.puppeteer.launch({
-            args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath,
-            headless: chromium.headless,
-          });
-
-    
 
         const page = await browser.newPage();
         await page.goto(url, { waitUntil: 'networkidle2' });
