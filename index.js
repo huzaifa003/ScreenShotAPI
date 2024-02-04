@@ -2,6 +2,8 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const chromium = require('chrome-aws-lambda');
+const puppeteer = require('puppeteer-core');
+
 
 const app = express();
 const port = process.env.PORT || 3000;
